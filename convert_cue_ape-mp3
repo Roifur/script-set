@@ -1,0 +1,13 @@
+#! /bin/sh
+# convertit les flac en mp3 puis supprime les flac du dossier
+# necessite les paquets: flac lame id3
+
+
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+
+$SCRIPTPATH/script/scan_folder "*.ape" convert_cue_ape-mp3

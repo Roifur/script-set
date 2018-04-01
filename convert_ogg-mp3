@@ -1,0 +1,14 @@
+#! /bin/bash
+# convertit les flac en mp3 puis supprime les flac du dossier
+# necessite les paquets: flac lame id3
+
+
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+find . -name *.ogg | while read line; do
+    avconv -i "$line" -acodec libmp3lame -map_metadata 0:s:0 "${line:0:(-3)}mp3" </dev/null
+done

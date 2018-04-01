@@ -1,0 +1,30 @@
+#! /bin/bash
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+count=$1
+
+$SCRIPTPATH/scan_folder "${@:2}"
+
+for f in */ ; do 
+	#echo "./$f"
+	if [ -d "$f" ] ; then
+		cd $f
+		
+		if ! [ $1 -gt 1 ] ; then
+			$SCRIPTPATH/scan_folder "${@:2}"
+		else
+			#echo $1
+			$SCRIPTPATH/scan_sub_folder $((count-1)) "${@:2}"
+		fi
+		
+		$SCRIPTPATH/scan_folder "${@:2}"
+		
+		cd ..
+		
+	fi
+	
+done

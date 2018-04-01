@@ -1,0 +1,25 @@
+#! /bin/bash
+
+TEX2IM="tex2im-1.8/tex2im"
+
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+
+
+#$SCRIPTPATH/$TEX2IM "$1"
+
+while IFS='$' read -ra ADDR; do
+	
+	j=1
+	
+	while [ ${j} -lt ${#ADDR[@]} ]; do
+		echo ">>${2%.*}_$(((j+1)/2)).${2##*.} : ${ADDR[$j]}"
+		
+		$SCRIPTPATH/$TEX2IM -o "${2%.*}_$(((j+1)/2)).${2##*.}" "${ADDR[$j]}"
+		j=$(( j + 2 ))
+	done
+done <<< "$1"

@@ -1,0 +1,64 @@
+#! /bin/bash
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+LIB_NAME=$2
+TEX_FILE=$1
+
+LIB_FOLDER=$LIB_NAME #.$(date +%s)
+
+mkdir "$LIB_FOLDER"
+
+#generate img
+
+if [ -f "$TEX_FILE" ] ; then
+	$SCRIPTPATH/convert_tex_file-img "$TEX_FILE" "$LIB_FOLDER/${TEX_FILE%.*}_img.png"
+fi
+
+
+LIB_ID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 22 | head -n 1)
+
+
+
+
+XML_FILE="cards.xml"
+if [ -f "$LIB_FOLDER/$XML_FILE" ] ; then
+	rm "$LIB_FOLDER/$XML_FILE"
+fi
+cd $LIB_FOLDER
+
+
+$SCRIPTPATH/scan_folder "*1.png" add_card_mnemosyne_lib_xml $LIB_ID $XML_FILE 
+
+# ajout du pied de page
+echo "</openSM2sync>" >>$XML_FILE
+
+# ajout du header
+nb_lines=$(sed -n '$=' $XML_FILE)
+sed -i '1i\'"<openSM2sync number_of_entries=\"$nb_lines\"><log type=\"10\" o_id=\"$LIB_ID\"><name>$LIB_NAME</name></log>"' ' $XML_FILE
+
+
+
+
+if [ -f "METADATA" ] ; then
+	rm "METADATA"
+fi
+echo "tags:$LIB_NAME">>"METADATA"
+echo "author_email:nathan.roch@gnothi.ch">>"METADATA"
+echo "notes:">>"METADATA"
+echo "author_name:">>"METADATA"
+echo "card_set_name:">>"METADATA"
+echo "date:$(date +%c)">>"METADATA"
+echo "revision:1">>"METADATA"
+
+
+
+
+zip -r "$LIB_NAME.zip" *
+cd ..
+mv $LIB_FOLDER/$LIB_NAME.zip $LIB_NAME.cards
+
+

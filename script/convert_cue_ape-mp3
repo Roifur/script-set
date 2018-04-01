@@ -1,0 +1,18 @@
+#!/bin/bash
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+g=$1
+
+if ! [ -f "${g%.*}.flac" ] ; then
+	$SCRIPTPATH/avconv_easy "$g" "flac" 
+fi
+if [ -f "${g%.*}.cue" ] && [ -f "${g%.*}.cue" ] ; then
+	shnsplit -O never -o flac -f "${g%.*}.cue" "${g%.*}.flac"
+fi
+
+$SCRIPTPATH/scan_folder "*.flac" exclude_file "${g%.*}.flac" avconv_easy "mp3"
+

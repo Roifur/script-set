@@ -1,0 +1,24 @@
+#! /bin/bash
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+file=$1
+
+
+if [ -f "$file" ] ; then
+	oldIFS=$IFS
+	IFS=$'\n' #field separator -> for loop
+	i=1
+	for line in $(cat $file)
+	do
+		
+		$SCRIPTPATH/convert_tex_line-img "$line" "${2%.*}_$((i)).${2##*.}" "${@:3}"
+		
+		i=$((i+1))
+	done
+
+	IFS=$oldIFS
+fi

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+
+g=$1
+	
+if [ -f "$g" ] ; then
+	if ! [ -f "${g}.ok" ]; then
+		iconv -f ISO-8859-1 -t UTF-8 "${g}" > "${g%.cue}-UTF-8.cue"
+		cuetag "${g%.cue}-UTF-8.cue" *.mp3
+		rm "${g%.cue}-UTF-8.cue"
+		echo "ok" > "${g}.ok"
+	fi
+fi

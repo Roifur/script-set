@@ -1,0 +1,14 @@
+#! /bin/bash
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+for a in $1; do
+	#	echo $a
+	if [ -f "$a" ] ; then
+	
+		$SCRIPTPATH/"$2" "$a" "${@:3}"
+	fi
+done

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+
+var=$(readlink -f $1)
+echo $var

@@ -1,0 +1,47 @@
+#! /bin/bash
+
+TEX2IM="tex2im-1.8/tex2im"
+
+
+SCRIPT=$(readlink -f "$0")
+# Absolute path this script is in, thus /home/user/bin
+SCRIPTPATH=$(dirname "$SCRIPT")
+#echo $SCRIPTPATH
+
+OUT_FILE="$3"
+ID_LIB="$2"
+
+file1="$1"
+file2="${1%.*}"
+file2="${file2%?}2.${file1##*.}"
+
+
+if [ -f "$file1" ] ; then
+	if [ -f "$file2" ] ; then
+		echo "<log type=\"13\"><fname>$file1</fname></log>">> $OUT_FILE
+		echo "<log type=\"13\"><fname>$file2</fname></log>">> $OUT_FILE
+		id_file=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 22 | head -n 1)
+		id_card1=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 22 | head -n 1)
+		id_card2=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 22 | head -n 1)
+		
+		echo "<log type=\"16\" o_id=\"$id_file\"><b>&lt;img src=\"$file1\"&gt;</b><f>&lt;img src=\"$file2\"&gt;</f></log>">> $OUT_FILE
+		
+		# FRONT-TO-BACK cards
+		# echo "<log card_t=\"1\" fact_v=\"1.1\" e=\"2.5\" gr=\"-1\" tags=\"$ID_LIB\" rt_rp_l=\"0\" lps=\"0\" l_rp=\"-1\" n_rp=\"-1\" ac_rp_l=\"0\" rt_rp=\"0\" ac_rp=\"0\" type=\"6\" o_id=\"$id_card1\" fact=\"$id_file\"></log>">> $OUT_FILE
+
+		# FRONT-TO-BACK and BACK-TO-FRONT cards
+		echo "<log card_t=\"2\" fact_v=\"2.1\" e=\"2.5\" gr=\"-1\" tags=\"$ID_LIB\" rt_rp_l=\"0\" lps=\"0\" l_rp=\"-1\" n_rp=\"-1\" ac_rp_l=\"0\" rt_rp=\"0\" ac_rp=\"0\" type=\"6\" o_id=\"$id_card1\" fact=\"$id_file\"></log>">> $OUT_FILE
+		echo "<log card_t=\"2\" fact_v=\"2.2\" e=\"2.5\" gr=\"-1\" tags=\"$ID_LIB\" rt_rp_l=\"0\" lps=\"0\" l_rp=\"-1\" n_rp=\"-1\" ac_rp_l=\"0\" rt_rp=\"0\" ac_rp=\"0\" type=\"6\" o_id=\"$id_card2\" fact=\"$id_file\"></log>">> $OUT_FILE
+		
+	else
+		echo "error \"$file2\" is not existing"
+		exit 0
+	fi
+else
+	echo "error \"$file1\" is not existing"
+	exit 0
+fi
+
+
+
+
